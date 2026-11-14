@@ -3,6 +3,7 @@
 // Usage: node crawl.mjs <startUrl> [maxPages=5000] > crawl.jsonl
 // Env:   STAGING_BASIC_AUTH=user:pass   HTTP Basic auth for staging
 //        YWLI_INSECURE=1                accept self-signed certs (local *.ddev.site only)
+//        YWLI_POLITE=1                  1 request at a time + 1s pause (third-party / prospect sites)
 import * as cheerio from 'cheerio';
 
 const [, , startArg, maxArg = '5000'] = process.argv;
@@ -14,7 +15,9 @@ if (process.env.YWLI_INSECURE === '1') process.env.NODE_TLS_REJECT_UNAUTHORIZED 
 
 const start = new URL(startArg);
 const MAX = Number(maxArg);
-const CONC = 4;
+const POLITE = process.env.YWLI_POLITE === '1';
+const CONC = POLITE ? 1 : 4;
+const DELAY_MS = POLITE ? 1000 : 0;
 const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; YWLI-Optimizer/0.1)' };
 if (process.env.STAGING_BASIC_AUTH) {
   headers.Authorization = 'Basic ' + Buffer.from(process.env.STAGING_BASIC_AUTH).toString('base64');
@@ -68,7 +71,29 @@ async function readSitemap(u, depth = 0) {
   }
 }
 
+/** Cheap CMS/stack fingerprint so recommendations can be phrased for the right platform. */
+function detectStack(body, $, h) {
+  const hints = new Set();
+  const gen = $('meta[name="generator"]').attr('content');
+  if (gen) hints.add(`generator:${gen}`);
+  if (/wp-content|wp-includes/.test(body)) hints.add('wordpress');
+  if (/_resources\/|\/resources\/vendor\/silverstripe|silverstripe/i.test(body)) hints.add('silverstripe');
+  if (/cdn\.shopify\.com|Shopify\.theme/.test(body)) hints.add('shopify');
+  if (/static\.wixstatic\.com|wix\.com/.test(body)) hints.add('wix');
+  if (/squarespace\.com/.test(body)) hints.add('squarespace');
+  if (/\/typo3conf\/|\/typo3temp\//.test(body)) hints.add('typo3');
+  if (/\/sites\/default\/files|Drupal\.settings|drupal-settings-json/.test(body)) hints.add('drupal');
+  if (/\/media\/jui\/|\/components\/com_/.test(body)) hints.add('joomla');
+  if (/__NEXT_DATA__|\/_next\/static/.test(body)) hints.add('nextjs');
+  if (/\/_nuxt\//.test(body)) hints.add('nuxt');
+  if (/webflow\.com|data-wf-site/.test(body)) hints.add('webflow');
+  const server = h.get('server'); if (server) hints.add(`server:${server}`);
+  const powered = h.get('x-powered-by'); if (powered) hints.add(`powered-by:${powered}`);
+  return [...hints];
+}
+
 async function visit(url) {
+  if (DELAY_MS) await new Promise((r) => setTimeout(r, DELAY_MS));
   const rec = { url, inSitemap: inSitemap.has(url) };
   const t0 = Date.now();
   try {
@@ -87,7 +112,9 @@ async function visit(url) {
     }
     if (!rec.type?.includes('text/html')) return rec;
 
-    const $ = cheerio.load(await r.text());
+    const body = await r.text();
+    const $ = cheerio.load(body);
+    rec.stack = detectStack(body, $, r.headers);
 
     const jsonLdTypes = [];
     $('script[type="application/ld+json"]').each((_, e) => {

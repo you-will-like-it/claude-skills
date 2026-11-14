@@ -1,6 +1,6 @@
 ---
 name: ywli-site-optimizer
-description: Audit and optimize SilverStripe 6 client sites for technical SEO, content SEO (DE/BS/HR/SR), Lighthouse ≥90 in all four categories on mobile and desktop, and WCAG 2.2 AA. Report first (presentation + detailed PDF), then code PR and CMS draft content changes after explicit approval. Use for any SEO audit, PageSpeed/Lighthouse/Core Web Vitals work, accessibility/barrierefreiheit/BFSG check, or "optimize this site" request, even if only one of these areas is named.
+description: Audit and optimize SilverStripe 6 client sites for technical SEO, content SEO (DE/BS/HR/SR), Lighthouse ≥90 in all four categories on mobile and desktop, and WCAG 2.2 AA. Report first (presentation + detailed PDF), then code PR and CMS draft content changes after explicit approval. Also has an audit-only mode for any website with public HTTP access only (prospects, other CMSs): crawl + Lighthouse + axe → PDF action plan. Use for any SEO audit, PageSpeed/Lighthouse/Core Web Vitals work, accessibility/barrierefreiheit/BFSG check, or "optimize this site" request, even if only one of these areas is named.
 ---
 
 # YWLI Site Optimizer
@@ -78,6 +78,35 @@ Lighthouse needs roughly 15–25 s per URL per device. Before starting, tell the
 nohup node ~/ywli-optimizer/tools/lh.mjs urls.txt mobile lh > logs/lh-mobile.log 2>&1 &
 tail -n 5 logs/lh-mobile.log
 ```
+
+## Audit-only mode (public HTTP access only)
+
+Use this mode when the operator has nothing but the public URL. Typical cases: a prospect or sales pitch, a site on another CMS, or a client who only wants a list of measures. It runs Phase 1 and the report, then **ends**. There is no gate and no Phase 2.
+
+**Works without access:**
+- crawl and technical SEO
+- Lighthouse and axe
+- the manual WCAG checklist, done in a browser
+- on-page content SEO
+
+**Missing data:**
+- **No GSC:** no query data, so no striking-distance, CTR or cannibalization analysis. Content SEO is based on the page content only. Say so in the report, and list GSC access as the next step for a deeper analysis.
+- **No code:** findings are phrased by symptom and template, not by file. Recommendations follow the detected stack (`stack` in `crawl-issues.json`: WordPress, TYPO3, Shopify, Wix, SilverStripe, …). Name a platform-specific fix only when you are confident it applies. Otherwise describe what must change, not how.
+
+**Load and scope (third-party server):**
+- Crawl with `YWLI_POLITE=1`: one request at a time, 1 s apart.
+- Lighthouse only on a **sample**: every page type that `crawl.jsonl` shows (by URL pattern and heading/element structure), 1–3 URLs each, plus the home page and the main money pages. Mobile + desktop, median of 3.
+- axe on the same sample.
+- State the sampling in the report.
+
+**Report:**
+- Same two PDFs: the presentation plus the detailed "Maßnahmenkatalog / Plan mjera".
+- Use **YouWillLikeIT branding** (the site owner is not yet a client) with the site's name and screenshot on the title slide.
+- Every measure gets priority, effort (S/M/L) and the expected impact area (SEO / Performance / A11y / legal).
+- The last slide is the offer hook: what YouWillLikeIT can implement and what access would be needed (see Phase 0).
+- Don't claim anything that requires data you didn't have (rankings, traffic, conversions).
+
+Store runs under `clients/<domain>/` with a minimal `project.yml` (`site`, `report_language`, `mode: audit-only`).
 
 ## Phase 0: Intake
 

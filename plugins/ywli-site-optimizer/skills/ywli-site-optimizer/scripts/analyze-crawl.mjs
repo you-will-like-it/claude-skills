@@ -124,8 +124,13 @@ const order = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
 issues.sort((a, b) => order[a.severity] - order[b.severity] || b.count - a.count);
 
 writeFileSync(join(out, 'urls.txt'), indexable.map((r) => r.url).join('\n') + '\n');
+const stackCount = new Map();
+for (const r of pages) for (const s of r.stack ?? []) stackCount.set(s, (stackCount.get(s) ?? 0) + 1);
+const stack = [...stackCount].sort((a, b) => b[1] - a[1]).map(([hint, pages]) => ({ hint, pages }));
+
 writeFileSync(join(out, 'crawl-issues.json'), JSON.stringify({
-  crawled: recs.length, htmlPages: pages.length, indexable: indexable.length, issues,
+  crawled: recs.length, htmlPages: pages.length, indexable: indexable.length, stack, issues,
 }, null, 2));
+console.log(`stack: ${stack.map((s) => s.hint).join(', ') || 'unknown'}`);
 console.log(`crawled=${recs.length} html=${pages.length} indexable=${indexable.length} issueTypes=${issues.length}`);
 for (const i of issues) console.log(`${i.severity.padEnd(8)} ${i.type.padEnd(28)} ${i.count}`);

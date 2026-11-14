@@ -18,6 +18,8 @@ Audit and optimization workflow for SilverStripe 6 client sites under the YouWil
 | 2 Fixes | PR on GitHub/Bitbucket; CMS content written as **draft** (task or browser) | branch + drafts only |
 | 3 Verify | rerun on staging, before/after report | no |
 
+**Audit-only mode:** for any site with public HTTP access only (prospects, other CMSs). Runs Phase 1 politely, on a Lighthouse sample per page type, then produces the PDF action plan under YouWillLikeIT branding. Stops there.
+
 Production is never written to. Content is never published by the skill.
 
 ## Prerequisites (Windows + WSL2)
@@ -40,6 +42,7 @@ Preflight copies `skills/ywli-site-optimizer/scripts/` to `~/ywli-optimizer/tool
 Ask Claude in a WSL VS Code window, e.g.:
 
 - "Audit https://www.example.de, client Muster GmbH, report in German."
+- "Audit-only: https://www.prospect.de, they are on WordPress, we only have the URL. PDF action plan in German."
 - "Run the BFSG/accessibility check for staging.example.ba, report in Bosnian."
 - "Findings A11Y-001..A11Y-014 and PERF-* are approved, repo is …, go."
 
@@ -81,4 +84,5 @@ Create dedicated accounts with minimal rights and revoke them after the project.
 
 ## Changelog
 
+- **0.2.0** (2026-11-14): audit-only mode for sites with public HTTP access only; polite crawl (`YWLI_POLITE=1`); CMS/stack detection in crawl results.
 - **0.1.0** (2026-11-14): initial version. WSL/DDEV workflow, scripts extracted from SKILL.md, crawl analysis, median Lighthouse, axe per-rule summary, GSC export, PDF rendering.
