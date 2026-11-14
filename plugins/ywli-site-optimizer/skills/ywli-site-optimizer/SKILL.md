@@ -79,6 +79,29 @@ nohup node ~/ywli-optimizer/tools/lh.mjs urls.txt mobile lh > logs/lh-mobile.log
 tail -n 5 logs/lh-mobile.log
 ```
 
+## Running in claude.ai (cloud session)
+
+Phase 1 and audit-only work entirely in a claude.ai cloud session. Phase 2 code work stays in VS Code/WSL with DDEV.
+
+**Network:**
+- The sandbox reaches websites only if the account allows network egress to **all domains**. On a paid individual plan the person sets this in claude.ai Settings → Capabilities; on Team/Enterprise an admin sets it in Organization settings → Capabilities.
+- Check first: `curl -sS -o /dev/null -w "%{http_code}" https://<site>/`. A `CONNECT tunnel failed, response 403` means egress is not enabled. Tell the operator and stop.
+
+**Tools:**
+- Attach the private repo `you-will-like-it/claude-skills` to the session (repo-attach tool, read access) and clone it shallow.
+- Copy `plugins/ywli-site-optimizer/skills/ywli-site-optimizer/scripts/*` to `~/ywli-optimizer/tools/`.
+- Run `npm install` and `npx puppeteer browsers install chrome --install-deps`, then export `CHROME_PATH` as in the preflight.
+
+**Workspace:**
+- `~/ywli-optimizer/clients/<domain>/` inside the sandbox. It does **not** persist across sessions.
+- Send the PDFs with the file-sending tool. If the session is in a claude.ai Project, also save a short summary there.
+
+**Long runs:**
+- Background processes stop shortly after a reply ends. Run Lighthouse in the foreground, in chunks that finish within ~9 minutes (about 10 URLs per device per chunk; `lh.mjs` appends to the same CSV).
+- Keep the audit-only sample at ≤30 URLs.
+
+**GSC:** only if the operator uploads a CSV export.
+
 ## Audit-only mode (public HTTP access only)
 
 Use this mode when the operator has nothing but the public URL. Typical cases: a prospect or sales pitch, a site on another CMS, or a client who only wants a list of measures. It runs Phase 1 and the report, then **ends**. There is no gate and no Phase 2.

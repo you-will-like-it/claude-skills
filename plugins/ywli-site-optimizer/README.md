@@ -30,6 +30,10 @@ Production is never written to. Content is never published by the skill.
 
 Preflight copies `skills/ywli-site-optimizer/scripts/` to `~/ywli-optimizer/tools/` and runs `npm install` there. Re-run it after updating the plugin.
 
+## Use in claude.ai
+
+Requires network egress for all domains (claude.ai Settings → Capabilities). The account skill uses the same SKILL.md and pulls the scripts from this repo. Example: "Audit-only https://www.example.de, PDF plan mjera na njemačkom."
+
 ## Install
 
 ```text
@@ -84,5 +88,6 @@ Create dedicated accounts with minimal rights and revoke them after the project.
 
 ## Changelog
 
+- **0.3.0** (2026-11-14): runs in claude.ai cloud sessions (needs network egress "all domains"); scripts pulled from this repo; Lighthouse in foreground chunks.
 - **0.2.0** (2026-11-14): audit-only mode for sites with public HTTP access only; polite crawl (`YWLI_POLITE=1`); CMS/stack detection in crawl results.
 - **0.1.0** (2026-11-14): initial version. WSL/DDEV workflow, scripts extracted from SKILL.md, crawl analysis, median Lighthouse, axe per-rule summary, GSC export, PDF rendering.
