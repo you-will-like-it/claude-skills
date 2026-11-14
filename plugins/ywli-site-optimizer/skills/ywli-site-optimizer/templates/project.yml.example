@@ -1,0 +1,27 @@
+# ~/ywli-optimizer/clients/<slug>/project.yml
+client: Muster GmbH
+site: https://www.example.de              # production: read-only audits only
+staging: https://staging.example.de       # fixes are verified here
+local: https://example.ddev.site          # optional: DDEV project for pre-push checks
+
+locales: [de_DE]                          # Fluent locales; [] if not multilingual
+report_language: de                       # de | bs
+content_language_variant: null            # BS/HR/SR only, e.g. "bs-Latn, ijekavica"
+
+brand:                                    # client brand; footer always "powered by YouWillLikeIT"
+  logo: assets/logo.svg
+  primary: "#0B5D3B"
+  secondary: "#1F2933"
+
+repo:
+  host: github                            # github | bitbucket
+  url: git@github.com:client/site.git
+  base: main
+  path: ~/projects/example                # local clone with .ddev/
+
+cms_mode: task                            # task | browser
+gsc:
+  property: "sc-domain:example.de"
+  auth: service-account                   # service-account | csv
+
+approved_findings: []                     # filled at the GATE
