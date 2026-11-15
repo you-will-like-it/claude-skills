@@ -1,0 +1,104 @@
+# ss-version-aware: SilverStripe 5 -> 6 obrasci za scan-upgrade.sh
+# Format: ID<TAB>grep -E regex<TAB>globovi<TAB>hint. Detalji i izvor: 5-to-6.md#<id>.
+# \\{1,2} hvata i jednostruke (use/YAML) i dvostruke ('...\\...' PHP string) backslasheve.
+# Terminator ([^A-Za-z0-9_.]|$) iza FQCN-a: '.' je isključen jer su i18n ključevi oblika 'Stari\\FQCN.KEY' validni i u 6.
+# Pravilo: obrazac ne smije pogađati validan SS6 kod koji bi se zatvorio samo preimenovanjem nečeg legitimnog.
+M56-001	SilverStripe\\{1,2}ORM\\{1,2}ArrayLib([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\ArrayLib -> SilverStripe\Core\ArrayLib
+M56-002	SilverStripe\\{1,2}ORM\\{1,2}ArrayList([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\ArrayList -> SilverStripe\Model\List\ArrayList
+M56-003	SilverStripe\\{1,2}ORM\\{1,2}GroupedList([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\GroupedList -> SilverStripe\Model\List\GroupedList
+M56-004	SilverStripe\\{1,2}ORM\\{1,2}ListDecorator([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\ListDecorator -> SilverStripe\Model\List\ListDecorator
+M56-005	SilverStripe\\{1,2}ORM\\{1,2}Map([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\Map -> SilverStripe\Model\List\Map
+M56-006	SilverStripe\\{1,2}ORM\\{1,2}PaginatedList([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\PaginatedList -> SilverStripe\Model\List\PaginatedList (count() = trenutna stranica)
+M56-007	SilverStripe\\{1,2}ORM\\{1,2}SS_List([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\SS_List -> SilverStripe\Model\List\SS_List
+M56-008	SilverStripe\\{1,2}ORM\\{1,2}ValidationException([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\ValidationException -> SilverStripe\Core\Validation\ValidationException
+M56-009	SilverStripe\\{1,2}ORM\\{1,2}ValidationResult([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\ORM\ValidationResult -> SilverStripe\Core\Validation\ValidationResult
+M56-010	SilverStripe\\{1,2}View\\{1,2}ArrayData([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\View\ArrayData -> SilverStripe\Model\ArrayData
+M56-011	SilverStripe\\{1,2}View\\{1,2}ViewableData([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\View\ViewableData -> SilverStripe\Model\ModelData
+M56-012	SilverStripe\\{1,2}View\\{1,2}ViewableData_Customised([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\View\ViewableData_Customised -> SilverStripe\Model\ModelDataCustomised
+M56-013	SilverStripe\\{1,2}View\\{1,2}ViewableData_Debugger([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\View\ViewableData_Debugger -> SilverStripe\Model\ModelDataDebugger
+M56-014	SilverStripe\\{1,2}Forms\\{1,2}Validator([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\Forms\Validator -> SilverStripe\Forms\Validation\Validator
+M56-015	SilverStripe\\{1,2}Forms\\{1,2}RequiredFields([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\Forms\RequiredFields -> SilverStripe\Forms\Validation\RequiredFieldsValidator (novo ime klase)
+M56-016	SilverStripe\\{1,2}Forms\\{1,2}CompositeValidator([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\Forms\CompositeValidator -> SilverStripe\Forms\Validation\CompositeValidator
+M56-017	SilverStripe\\{1,2}Security\\{1,2}PasswordValidator([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\Security\PasswordValidator -> SilverStripe\Security\Validation\RulesPasswordValidator (zadano je sada EntropyPasswordValidator)
+M56-018	SilverStripe\\{1,2}View\\{1,2}SSViewer_BasicIteratorSupport([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TemplateEngine\BasicIteratorSupport (silverstripe/template-engine)
+M56-019	SilverStripe\\{1,2}View\\{1,2}SSTemplateParseException([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TemplateEngine\Exception\SSTemplateParseException
+M56-020	SilverStripe\\{1,2}View\\{1,2}SSTemplateParser([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TemplateEngine\SSTemplateParser
+M56-021	SilverStripe\\{1,2}View\\{1,2}SSViewer_(Scope|DataPresenter)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TemplateEngine\ScopeManager
+M56-022	SilverStripe\\{1,2}View\\{1,2}TemplateIteratorProvider([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TemplateEngine\TemplateIteratorProvider
+M56-023	SilverStripe\\{1,2}View\\{1,2}TemplateParser([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TemplateEngine\TemplateParser
+M56-024	SilverStripe\\{1,2}Dev\\{1,2}Constraint\\{1,2}ViewableDataContains([^A-Za-z0-9_.]|$)	*.php	-> SilverStripe\Dev\Constraint\ModelDataContains
+M56-025	SilverStripe\\{1,2}Dev\\{1,2}Validation\\{1,2}DatabaseAdminExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\Dev\Validation\DbBuildExtension
+M56-026	SilverStripe\\{1,2}Logging\\{1,2}HTTPOutputHandler([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\Logging\ErrorOutputHandler
+M56-027	SilverStripe\\{1,2}CMS\\{1,2}Controllers\\{1,2}LeftAndMainPageIconsExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\CMS\Controllers\LeftAndMainRecordIconsExtension
+M56-028	SilverStripe\\{1,2}CMS\\{1,2}Model\\{1,2}CurrentPageIdentifier([^A-Za-z0-9_.]|$)	*.php	-> SilverStripe\CMS\Model\CurrentRecordIdentifier
+M56-029	SilverStripe\\{1,2}Forms\\{1,2}HTMLEditor\\{1,2}TinyMCEConfig([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TinyMCE\TinyMCEConfig + composer require silverstripe/htmleditor-tinymce
+M56-030	SilverStripe\\{1,2}Forms\\{1,2}HTMLEditor\\{1,2}TinyMCE(CombinedGenerator|ScriptGenerator)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\TinyMCE\TinyMCE(CombinedGenerator|ScriptGenerator)
+M56-031	DNADesign\\{1,2}Elemental\\{1,2}TopPage\\{1,2}DataExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> DNADesign\Elemental\Extensions\TopPageElementExtension
+M56-032	DNADesign\\{1,2}Elemental\\{1,2}TopPage\\{1,2}FluentExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> DNADesign\Elemental\Extensions\TopPageFluentElementExtension
+M56-033	DNADesign\\{1,2}Elemental\\{1,2}TopPage\\{1,2}SiteTreeExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> DNADesign\Elemental\Extensions\TopPageSiteTreeExtension
+M56-034	DNADesign\\{1,2}Elemental\\{1,2}Controllers\\{1,2}ElementSiteTreeFilterSearch([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> DNADesign\Elemental\ORM\Search\ElementalSiteTreeSearchContext (i u YAML-u)
+M56-035	SilverStripe\\{1,2}UserForms\\{1,2}Form\\{1,2}UserFormsRequiredFields([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\UserForms\Form\UserFormsRequiredFieldsValidator
+M56-036	SilverStripe\\{1,2}ORM\\{1,2}DataExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	extends SilverStripe\Core\Extension; preimenuj hookove validate/populateDefaults/requireDefaultRecords/flushCache (M56-059..062)
+M56-037	SilverStripe\\{1,2}CMS\\{1,2}Model\\{1,2}SiteTreeExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	extends SilverStripe\Core\Extension; MetaTags/MetaComponents -> updateMetaTags/updateMetaComponents
+M56-038	SilverStripe\\{1,2}Admin\\{1,2}LeftAndMainExtension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	extends SilverStripe\Core\Extension; hook init() -> onInit()
+M56-039	SilverStripe\\{1,2}ORM\\{1,2}(Filterable|Limitable|Sortable)([^A-Za-z0-9_.]|$)	*.php	spojeno u SilverStripe\Model\List\SS_List (strogi tipovi)
+M56-040	SSViewer::(fromString|execute_string)\(|SSViewer_FromString	*.php	TemplateEngine::renderString($tpl, ViewLayerData $model) (npr. SSTemplateEngine)
+M56-041	SSViewer::hasTemplate\(	*.php	$engine->hasTemplate(...) na instanci TemplateEngine (npr. SSTemplateEngine)
+M56-042	SSViewer::(flush_template_cache|flush_cacheblock_cache)\(	*.php	SSTemplateEngine::flushTemplateCache() / flushCacheBlockCache()
+M56-043	SSViewer::chooseTemplate\(|ThemeResourceLoader::inst\(\)->findTemplate\(	*.php	uklonjeno bez zamjene; koristi imena templata (bez .ss)
+M56-044	SSViewer::get_base_tag\(	*.php	SSViewer::getBaseTag()
+M56-045	XML_val\(	*.php	XML_val() uklonjen; koristi getter metode
+M56-046	::has_curr\(	*.php	Controller::curr() pa provjeri null
+M56-048	extendValidationResult\(|updateValidationResult	*.php	hook updateValidate(ValidationResult $result)
+M56-049	->validationResult\(\)	*.php	Form::validate()
+M56-050	getCMSValidator\(	*.php	nadjačaj getCMSCompositeValidator()
+M56-051	function CMSEditLink\(\)[[:space:]]*(\{|$)	*.php	preimenuj u getCMSEditLink(): ?string
+M56-052	SilverStripe\\{1,2}Control\\{1,2}CliController([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	uklonjeno; BuildTask (PolyCommand) / sake komanda
+M56-053	SilverStripe\\{1,2}(Dev\\{1,2}DevBuildController|ORM\\{1,2}DatabaseAdmin)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\Dev\Command\DbBuild
+M56-054	SilverStripe\\{1,2}Dev\\{1,2}DevConfigController([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	-> SilverStripe\Dev\Command\ConfigDump
+M56-055	SilverStripe\\{1,2}Control\\{1,2}Util\\{1,2}IPUtils([^A-Za-z0-9_.]|$)	*.php	-> Symfony\Component\HttpFoundation\IpUtils
+M56-056	SilverStripe\\{1,2}Control\\{1,2}Middleware\\{1,2}FlushMiddleware([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	uklonjeno (flush radi Kernel)
+M56-057	function validate\(\)[[:space:]]*(\{|$)	*.php	dodaj povratni tip roditelja (DataObject/Validator: ValidationResult; Upload_Validator/EmbedContainer: bool)
+M56-058	function validate\([[:space:]]*\$validator	*.php	FormField::validate(): ValidationResult, bez $validator
+M56-059	function validate\([^)]*ValidationResult	*.php	Extension hook validate -> updateValidate
+M56-062	function flushCache\(\)[[:space:]]*(\{|$)	*.php	Extension hook flushCache -> onFlushCache
+M56-063	function flushCache\(\$persistent	*.php	flushCache(bool $persistent = true): static
+M56-065	function (authenticationFailed|authenticationFailedUnknownUser|authenticationSucceeded)\(	*.php	Member hook -> onAuthenticationFailed / onAuthenticationFailedUnknownUser / onAuthenticationSucceeded
+M56-066	function (MetaTags|MetaComponents)\([[:space:]]*(array[[:space:]]+|string[[:space:]]+)?&	*.php	hook -> updateMetaTags / updateMetaComponents
+M56-067	function forgotPassword\([^,)]*\)	*.php	hook forgotPassword -> onForgotPassword
+M56-068	function getDefaultRecords\([[:space:]]*(array[[:space:]]+)?&	*.php	ErrorPage hook -> updateDefaultRecords
+M56-069	(updateLinkPageAdd|updateSiteTreeAsUL|updateSiteTreeHints|updateCurrentPageID)([^A-Za-z0-9_]|$)	*.php,*.yml,*.yaml	-> updateLinkRecordAdd / updateTreeAsUL / updateTreeHints / updateCurrentRecordID
+M56-070	onAfterRenewToken([^A-Za-z0-9_]|$)	*.php	-> onAfterRenewSession
+M56-071	function run\([[:space:]]*(HTTPRequest[[:space:]]+)?\$request	*.php	BuildTask: execute(InputInterface $input, PolyOutput $output): int; i $title -> protected string, $description -> protected static string, $segment -> protected static string $commandName, protected $enabled -> config is_enabled
+M56-073	function forTemplate\(\)[[:space:]]*(\{|$)	*.php	forTemplate(): string
+M56-074	function setValue\(\$value,[[:space:]]*\$record[^,)]*,[[:space:]]*\$markChanged|->defaultVal([^A-Za-z0-9_]|$)	*.php	DBField: setValue(mixed $value, null|array|ModelData $record = null, bool $markChanged = true): static; get/setDefaultValue()
+M56-075	\$writeComponents[[:space:]]*=[[:space:]]*false[[:space:]]*\)	*.php	write(...) dodaj bool $skipValidation = false
+M56-078	private static (\?string |string )?\$segment([^A-Za-z0-9_]|$)	*.php	BuildTask: protected static string $commandName
+M56-080	registered_controllers	*.php,*.yml,*.yaml	DevelopmentAdmin.controllers (HTTP) / .commands (DevCommand)
+M56-081	tree_class	*.php,*.yml,*.yaml	LeftAndMain.model_class
+M56-083	base_description	*.php,*.yml,*.yaml	base_class_description
+M56-084	private static (\?string |string )?\$icon_class([^A-Za-z0-9_]|$)	*.php	SiteTree: icon_class -> cms_icon_class (i icon -> cms_icon)
+M56-085	hide_ancestor	*.php,*.yml,*.yaml	SiteTree.hide_pagetypes (niz FQCN-ova na SiteTree)
+M56-086	need_permission	*.php,*.yml,*.yaml	uklonjeno; provjera u canCreate()
+M56-087	SSViewer.*global_key	*.php	SSTemplateEngine.global_key
+M56-088	HTMLEditorField.*fixed_row_height	*.php	HTMLEditorConfig.fixed_row_height
+M56-089	cookie_name_secure	*.php,*.yml,*.yaml	uklonjeno; cookie je uvijek PHPSESSID
+M56-092	driver:[[:space:]]*['"]?(imagick|gd)([^A-Za-z0-9_]|$)	*.yml,*.yaml	Injector servis InterventionImageDriver (class: Intervention\Image\Drivers\...\Driver)
+M56-093	connection_charset:[[:space:]]*['"]?utf8mb4	*.yml,*.yaml	utf8mb4 je zadano; blok se može ukloniti
+M56-095	<%[[:space:]]*(sprintf\([[:space:]]*)?_t\(	*.ss	<%t Namespace.KEY "Default" %>
+M56-097	\$CurrentPageURL	*.ss,*.php	uklonjeno bez zamjene
+M56-098	set(HTML|Plain)Template\([^)]*\.ss['"]	*.php	ime templata bez .ss
+M56-099	\[['"]data-schema['"]\][[:space:]]*=	*.php	$SchemaAttributesHtml u templatu umjesto getSchemaData() u getAttributes()
+M56-103	SilverStripe\\{1,2}(CMS|Versioned)\\{1,2}GraphQL\\{1,2}|DNADesign\\{1,2}Elemental\\{1,2}GraphQL\\{1,2}	*.php,*.yml,*.yaml	GraphQL uklonjen iz CMS-a; resolveri u silverstripe/graphql
+M56-105	SilverStripe\\{1,2}(ExternalLinks\\{1,2}[A-Za-z0-9_\\]+|SiteWideContentReport\\{1,2}(SitewideContentReport|Form\\{1,2}[A-Za-z0-9_]+|Model\\{1,2}(SitewideContentTaxonomy|SitewideContentReview)))([^A-Za-z0-9_\\.]|$)	*.php,*.yml,*.yaml	spojeno u silverstripe/reports: SilverStripe\Reports\... (provjeri tačan namespace)
+M56-110	function (getField|hasField)\([^,]*\)[[:space:]]*(\{|$)|function setField\(.*\)[[:space:]]*(\{|$)	*.php	dodaj povratni tip: setField(...): static / getField(...): mixed / hasField(...): bool (tipovi parametara su opcioni)
+M56-111	function (obj|customise|renderWith)\(.*\)[[:space:]]*(\{|$)	*.php	dodaj povratni tip: obj(...): ?object / customise(...): ModelData / renderWith(...): DBHTMLText (i ukloni $cacheName iz obj)
+M56-112	function getRecord\([[:space:]]*\$id\)[[:space:]]*(\{|$)	*.php	LeftAndMain::getRecord($id): ?DataObject
+M56-113	[A-Z][A-Za-z0-9_]*::get\(([^][(),]*,){3}[[:space:]]*(''|"")[[:space:]]*,|[A-Z][A-Za-z0-9_]*::get\(([^][(),]*,){5}	*.php	DataObject::get() bez $join: ukloni 4. argument (sada je to $limit)
+M56-114	get_by_stage\(([^][(),]*,){4}[[:space:]]*(''|"")[[:space:]]*,|get_by_stage\(([^][(),]*,){6}	*.php	Versioned::get_by_stage() bez $join: ukloni 5. argument (sada je to $limit)
+M56-115	->Menu\([^)]|function Menu\([[:space:]]*\$	*.php	ContentController::getMenu($level) ($Menu u templatu ostaje)
+M56-116	(->|::|function[[:space:]]+)(LinkPageAdd|LinkPageEdit|LinkPageHistory|LinkPageSettings|LinkPagesWithSearch|LinkPages|SiteTreeAsUL|SiteTreeHints|getSiteTreeFor)\(	*.php	CMSMain: LinkRecord*/TreeAsUL/TreeHints/getTreeFor
+M56-117	updateCurrentSiteConfig	*.php,*.yml,*.yaml	hook uklonjen bez zamjene
+M56-119	function loadDataFrom\([[:space:]]*\$data	*.php	loadDataFrom(object|array $data, int $mergeStrategy = 0, array $fieldList = [])
+M56-120	function render\([[:space:]]*\$params[^)]*\)[[:space:]]*(\{|$)	*.php	Controller::render($params = null): DBHTMLText
+M56-118	save_siteconfig	*.php	SiteConfig::getCMSActions() više ne vraća save akciju (dodaje je SingleRecordAdmin)

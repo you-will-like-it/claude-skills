@@ -1,0 +1,6 @@
+{
+    "name": "test/project",
+    "require": {
+        "silverstripe/framework": "dev-main"
+    }
+}

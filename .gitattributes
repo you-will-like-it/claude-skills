@@ -1,0 +1,6 @@
+*.sh text eol=lf
+*.patterns text eol=lf
+*.md text eol=lf
+# ywli-dev test fixtures keep their bytes (CRLF fixtures included); listed last so they win
+tests/ywli-dev/fixtures/crlf-ss5/** -text
+tests/ywli-dev/fixtures/** -text

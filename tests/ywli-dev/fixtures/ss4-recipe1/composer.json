@@ -1,0 +1,6 @@
+{
+    "name": "test/project",
+    "require": {
+        "silverstripe/recipe-cms": "1.3.0"
+    }
+}

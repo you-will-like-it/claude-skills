@@ -1,0 +1,7 @@
+{
+    "name": "test/module-single",
+    "type": "silverstripe-vendormodule",
+    "require": {
+        "silverstripe/framework": "^6.0"
+    }
+}

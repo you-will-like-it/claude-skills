@@ -1,0 +1,15 @@
+{
+    "packages": [
+        {
+            "name": "guzzlehttp/guzzle",
+            "version": "7.8.1",
+            "type": "library"
+        },
+        {
+            "name": "silverstripe/framework",
+            "version": "5.4.3",
+            "type": "silverstripe-vendormodule"
+        }
+    ],
+    "dev": true
+}

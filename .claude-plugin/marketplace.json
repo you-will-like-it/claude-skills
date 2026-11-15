@@ -14,6 +14,13 @@
       "description": "Audit and optimize SilverStripe 6 sites: technical + content SEO (DE/BS/HR/SR), Lighthouse >=90 on all categories, WCAG 2.2 AA. Report first, fixes after approval.",
       "version": "0.3.0",
       "category": "seo"
+    },
+    {
+      "name": "ywli-dev",
+      "source": "./plugins/ywli-dev",
+      "description": "SilverStripe dev tools: ss-version-aware (SS3–SS6 version detection, verified per-version references, 4→5 / 5→6 upgrade maps with a re-scannable checklist).",
+      "version": "0.1.0",
+      "category": "development"
     }
   ]
 }

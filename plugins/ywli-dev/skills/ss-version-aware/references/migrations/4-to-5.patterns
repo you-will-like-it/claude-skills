@@ -1,0 +1,85 @@
+# ss-version-aware: SilverStripe 4 -> 5 obrasci za scan-upgrade.sh
+# Format: ID<TAB>grep -E regex<TAB>globovi<TAB>hint. Detalji i izvor: 4-to-5.md#<id>.
+# \\{1,2} hvata i jednostruke (use/YAML) i dvostruke ('...\\...' PHP string) backslasheve.
+# Terminator ([^A-Za-z0-9_.]|$) iza FQCN-a: '.' je isključen zbog i18n ključeva oblika 'FQCN.KEY'.
+# Pravilo: obrazac ne smije pogađati validan SS5 kod koji bi se zatvorio samo preimenovanjem nečeg legitimnog.
+M45-001	SilverStripe\\{1,2}SecurityExtensions\\{1,2}Control\\{1,2}SudoModeController([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\SecurityExtensions\Control\SudoModeController -> SilverStripe\Admin\SudoModeController
+M45-002	SilverStripe\\{1,2}SecurityExtensions\\{1,2}Service\\{1,2}SudoModeService([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\SecurityExtensions\Service\SudoModeService -> SilverStripe\Security\SudoMode\SudoModeService
+M45-003	SilverStripe\\{1,2}SecurityExtensions\\{1,2}Service\\{1,2}SudoModeServiceInterface([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\SecurityExtensions\Service\SudoModeServiceInterface -> SilverStripe\Security\SudoMode\SudoModeServiceInterface
+M45-004	SilverStripe\\{1,2}CMS\\{1,2}Controllers\\{1,2}SilverStripeNavigator([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\CMS\Controllers\SilverStripeNavigator -> SilverStripe\Admin\Navigator\SilverStripeNavigator
+M45-005	SilverStripe\\{1,2}CMS\\{1,2}Controllers\\{1,2}SilverStripeNavigatorItem(_Unversioned)?([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\CMS\Controllers\SilverStripeNavigatorItem[_Unversioned] -> SilverStripe\Admin\Navigator\...
+M45-006	SilverStripe\\{1,2}CMS\\{1,2}Controllers\\{1,2}SilverStripeNavigatorItem_(ArchiveLink|LiveLink|StageLink)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\CMS\Controllers\SilverStripeNavigatorItem_*Link -> SilverStripe\VersionedAdmin\Navigator\... (silverstripe/versioned-admin)
+M45-007	SilverStripe\\{1,2}Control\\{1,2}Email\\{1,2}(SwiftMailer|SwiftPlugin|Mailer)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SwiftMailer/SwiftPlugin/Mailer uklonjeni -> symfony/mailer (Symfony\Component\Mailer\MailerInterface)
+M45-008	SilverStripe\\{1,2}Control\\{1,2}(RequestProcessor|RequestFilter)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	RequestProcessor/RequestFilter uklonjeni -> SilverStripe\Control\Middleware\HTTPMiddleware
+M45-009	SilverStripe\\{1,2}Core\\{1,2}Startup\\{1,2}(AbstractConfirmationToken|ConfirmationTokenChain|ErrorControlChain|ErrorControlChainMiddleware|ErrorDirector|ParameterConfirmationToken|URLConfirmationToken)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	Core\Startup ErrorControlChain/ConfirmationToken klase uklonjene bez zamjene - ukloni upotrebu
+M45-010	SilverStripe\\{1,2}Dev\\{1,2}CSVParser([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\Dev\CSVParser uklonjen -> League\Csv\Reader
+M45-011	SilverStripe\\{1,2}Forms\\{1,2}GridField\\{1,2}GridFieldVersionedState([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	GridFieldVersionedState -> SilverStripe\Versioned\VersionedGridFieldState\VersionedGridFieldState
+M45-012	SilverStripe\\{1,2}ORM\\{1,2}Connect\\{1,2}PDO(Connector|Query|StatementHandle)([^A-Za-z0-9_.]|$)|MySQLPDODatabase	*.php,*.yml,*.yaml	PDO konektor uklonjen -> MySQLDatabase (i SS_DATABASE_CLASS u .env)
+M45-013	SilverStripe\\{1,2}(View\\{1,2}Embed\\{1,2}EmbedResource|AssetAdmin\\{1,2}Model\\{1,2}(EmbedResource|Embeddable))([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	EmbedResource -> SilverStripe\View\Embed\EmbedContainer; AssetAdmin\Model\Embeddable -> SilverStripe\View\Embed\Embeddable
+M45-014	SilverStripe\\{1,2}View\\{1,2}Parsers\\{1,2}Diff([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SilverStripe\View\Parsers\Diff -> SilverStripe\View\Parsers\HtmlDiff
+M45-015	SilverStripe\\{1,2}View\\{1,2}Parsers\\{1,2}HTML4Value([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	HTML4Value -> SilverStripe\View\Parsers\HTMLValue
+M45-016	['"]HTMLValue['"]|%\$HTMLValue([^A-Za-z0-9_\\]|$)	*.php,*.yml,*.yaml	Injector skraćenica 'HTMLValue' uklonjena -> SilverStripe\View\Parsers\HTMLValue (FQCN)
+M45-017	Requirements_Minifier|->(set|get)Minif(ier|yCombinedFiles)\(	*.php,*.yml,*.yaml	Requirements minifier API uklonjen bez zamjene
+M45-018	SilverStripe\\{1,2}(Dev\\{1,2}Tasks\\{1,2}(MigrateFileTask|FixFolderPermissionsHelper)|Assets\\{1,2}Dev\\{1,2}(Tasks\\{1,2}(FileMigrationHelper|FolderMigrationHelper|LegacyThumbnailMigrationHelper|NormaliseAccessMigrationHelper|SecureAssetsMigrationHelper|TagsToShortcodeHelper|TagsToShortcodeTask|VersionedFilesMigrationTask)|VersionedFilesMigrator))([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	File migracijski taskovi uklonjeni - migraciju završi na CMS 4, pa ukloni config/kod
+M45-019	SilverStripe\\{1,2}Assets\\{1,2}FilenameParsing\\{1,2}LegacyFileIDHelper([^A-Za-z0-9_.]|$)|legacy_filenames	*.php,*.yml,*.yaml	legacy file resolution uklonjen -> config kao u installer app/_config/assets.yml
+M45-020	SilverStripe\\{1,2}CMS\\{1,2}Controllers\\{1,2}CMSPageHistoryController([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	CMSPageHistoryController -> SilverStripe\VersionedAdmin\Controllers\CMSPageHistoryViewerController
+M45-021	SilverStripe\\{1,2}CMS\\{1,2}Model\\{1,2}SiteTree(File|FileFormFactory|Folder)Extension([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	SiteTreeFileExtension -> FileLinkTracking; SiteTreeFileFormFactoryExtension -> UsedOnTable; SiteTreeFolderExtension bez zamjene
+M45-022	SilverStripe\\{1,2}CMS\\{1,2}Tasks\\{1,2}(MigrateSiteTreeLinkingTask|RemoveOrphanedPagesTask|SiteTreeMaintenanceTask)([^A-Za-z0-9_.]|$)	*.php,*.yml,*.yaml	CMS taskovi uklonjeni bez zamjene
+M45-023	Member::(currentUser|currentUserID|logged_in_session_exists)\(	*.php	Member::currentUser()/currentUserID() -> Security::getCurrentUser() (ID: ?->ID)
+M45-024	->logIn\([[:space:]]*\)	*.php	$member->logIn() -> Security::setCurrentUser($member) ili IdentityStore::logIn($member)
+M45-026	Security::(findAnAdministrator|default_admin_username|default_admin_password|check_default_admin|has_default_admin|setDefaultAdmin|clear_default_admin)\(|Member::default_admin\(	*.php	default admin metode -> SilverStripe\Security\DefaultAdminService
+M45-027	set_title_columns\(	*.php	Member::set_title_columns() -> config Member.title_format
+M45-028	(->|::)(set_)?stat\([[:space:]]*['"]	*.php	stat()/set_stat() -> config()->get() / config()->set()
+M45-029	(config\(\)|Config::modify\(\)|Config::inst\(\)|Config::forClass\([^()]*\))->update\(	*.php	Config ...->update() -> ->merge() (ili ->set() za zamjenu vrijednosti)
+M45-030	Convert::(array2json|json2array|json2obj|raw2json|xml2array|recursiveXMLToArray)\(	*.php	Convert JSON/XML metode -> json_encode()/json_decode() (XML: zasebna biblioteka)
+M45-031	ClassInfo::(baseDataClass|table_for_object_field)\(	*.php	ClassInfo::baseDataClass()/table_for_object_field() -> DataObject::getSchema()->baseDataClass()/tableForField()
+M45-032	->hasService\(	*.php	Injector::hasService() -> Injector::has()
+M45-033	->(getResourcePath|getResourceURL|getRelativeResourcePath)\(	*.php	Module::getResourcePath()/getResourceURL()/getRelativeResourcePath() -> getResource($path)->getPath()/getURL()/getRelativePath(); hasResource() vidi Napomenu
+M45-034	Director::isManifestFlushed\(	*.php	Director::isManifestFlushed() -> Kernel::isFlushed()
+M45-035	DB::getConn\(	*.php	DB::getConn() -> DB::get_conn()
+M45-036	->doValidate\(|function doValidate\(	*.php	DataObject::doValidate() -> validate()
+M45-037	duplicateManyManyRelations\(	*.php	duplicateManyManyRelations() -> duplicateRelations()
+M45-038	->getGenerator\(	*.php	DataList::getGenerator() uklonjen -> foreach ($list as ...) / getIterator()
+M45-039	disableBasicAuth\(|\$basicAuthEnabled([^A-Za-z0-9_]|$)	*.php	disableBasicAuth()/$basicAuthEnabled -> BasicAuthMiddleware.URLPatterns
+M45-040	HTTP::(set_cache_age|get_cache_age|register_modification_date|register_modification_timestamp|register_etag|add_cache_headers|augmentState|gmt_date)\(	*.php	HTTP cache metode -> HTTPCacheControlMiddleware (setMaxAge(), registerModificationDate()); gmt_date -> gmdate()
+M45-041	SSViewer::set_theme\(	*.php	SSViewer::set_theme() -> SSViewer::set_themes([...]); YAML SSViewer.theme -> themes
+M45-042	Deprecation::(notification_version|set_enabled|get_enabled|dump_settings|restore_settings)\(	*.php	Deprecation::notification_version()/set_enabled() -> Deprecation::enable()
+M45-043	assert(Not)?DOS(Equals|Contains|AllMatch)\(	*.php	assertDOS*() -> assertListEquals/assertListContains/assertListNotContains/assertListAllMatch
+M45-044	useDraftSite\(|get_use_draft_site\(|\$use_draft_site([^A-Za-z0-9_]|$)	*.php	useDraftSite()/$use_draft_site -> ?stage=Stage u URL-u zahtjeva
+M45-045	->nextRecord\(	*.php	Query::nextRecord() -> foreach ($query as $row) / getIterator(); seek() i ostalo vidi Napomenu
+M45-046	->(getSwiftMessage|setSwiftMessage|getFailedRecipients|setFailedRecipients|invalidateBody)\(	*.php	Email Swift metode uklonjene -> symfony/mailer API (Email extends Symfony\Component\Mime\Email)
+M45-047	authenticator_class([^A-Za-z0-9_]|$)	*.php	LoginForm::$authenticator_class -> getAuthenticatorClass()/setAuthenticatorClass()
+M45-048	creatableChildren\(	*.php,*.ss	SiteTree::creatableChildren() -> creatableChildPages()
+M45-049	ini2bytes\(	*.php	File::ini2bytes() -> Convert::memstring2bytes()
+M45-051	menu_title_for_class\(	*.php	LeftAndMain::menu_title_for_class() -> LeftAndMain::menu_title()
+M45-053	->(doPublish|doRollbackTo|allVersions|VersionsList|migrateVersion)\(|->publish\([[:space:]]*(['"]|Versioned::)	*.php	Versioned: doPublish->publishRecursive, publish->copyVersionToStage, doRollbackTo->rollbackRecursive, allVersions->Versions, migrateVersion->setMigratingVersion
+M45-054	Subsite::currentSubsiteID\(|Subsite::\$force_subsite	*.php	Subsite::currentSubsiteID() -> SubsiteState::singleton()->getSubsiteId(); $force_subsite -> withState()
+M45-055	EscapedTitle	*.php,*.ss	userforms getEscapedTitle()/$EscapedTitle -> $Title
+M45-056	(get|\$|\.)LinkingMode\([^)]	*.php,*.ss	fluent getLinkingMode($locale) -> LocaleInformation($locale)->getLinkingMode(); LocaleLink() vidi Napomenu
+M45-057	EnvironmentChecker::(set|get)_(email_results|from_email_address|to_email_address)\(	*.php	EnvironmentChecker set_/get_ email metode -> config EnvironmentChecker.email_results/to_email_address/from_email_address
+M45-058	function updateRelativeLink\([^,()]*,[^,()]*\)	*.php	updateRelativeLink(&$base, &$action) -> updateRelativeLink(&$link, $base, $action)
+M45-059	function duplicate\(.*\)[[:space:]]*(\{|$)	*.php	duplicate() override -> dodaj povratni tip : static (bool $doWrite = true, array|null $relations = null)
+M45-060	function (setUp|tearDown|setUpBeforeClass|tearDownAfterClass)\(\)[[:space:]]*(\{|$)	*.php	PHPUnit 9: setUp()/tearDown()/...BeforeClass() -> dodaj : void
+M45-061	function forgotPassword\(.*\)[[:space:]]*(\{|$)	*.php	forgotPassword($data, $form) -> forgotPassword(array $data, Form $form): HTTPResponse
+M45-062	function import\(.*\)[[:space:]]*(\{|$)	*.php	samo za ModelAdmin podklase: import($data, $form, $request) -> import(array $data, Form $form): HTTPResponse
+M45-063	function (getIterator|offsetExists|offsetGet|offsetSet|offsetUnset)\(.*\)[[:space:]]*(\{|$)	*.php	getIterator()/offset*() override -> dodaj povratni tip roditelja (Traversable / bool / mixed / void)
+M45-064	function write\([[:space:]]*array[[:space:]]+\$record	*.php	Monolog 3: write(array $record) -> write(Monolog\LogRecord $record): void
+M45-065	function (redirect|redirectBack)\(.*\)[[:space:]]*(\{|$)	*.php	redirect()/redirectBack() override -> dodaj : HTTPResponse (redirect(string $url, int $code = 302))
+M45-068	->(limit|setLimit)\([[:space:]]*(0|false)[[:space:]]*[,)]	*.php	limit(0[, x])/setLimit(0) više ne ukida limit (0 = 0 redova) -> limit(null[, x])/setLimit(null)
+M45-069	->sort\([[:space:]]*(['"][^'"]*\(|''|""|\[\])	*.php	sort() više ne prima raw SQL ni ''/[] -> orderBy('...') za SQL; sort(null) briše sort
+M45-070	Swift_[A-Za-z]	*.php,*.yml,*.yaml	Swift_* transport config -> MAILER_DSN u .env (symfony/mailer)
+M45-071	APP_SMTP_(USERNAME|PASSWORD)	*.php,*.yml,*.yaml	APP_SMTP_USERNAME/PASSWORD uklonjeni -> MAILER_DSN
+M45-072	Symfony\\{1,2}Component\\{1,2}Cache\\{1,2}Simple\\{1,2}	*.php,*.yml,*.yaml	Symfony Cache\Simple\* -> Cache\Adapter\* (npr. PhpFilesCache -> PhpFilesAdapter)
+M45-073	disable_http_cache|cache_ajax_requests	*.php,*.yml,*.yaml	HTTP.disable_http_cache/cache_ajax_requests -> HTTPCacheControlMiddleware.defaultState/defaultForcingLevel
+M45-075	Versioned\([[:space:]]*['"]?(Stage|Live)	*.php,*.yml,*.yaml	Versioned('Stage','Live') -> SilverStripe\Versioned\Versioned (staged) ili Versioned.versioned
+M45-076	styleselect	*.php,*.yml,*.yaml	TinyMCE 6: styleselect -> styles
+M45-077	['"]spellchecker['"]	*.php,*.yml,*.yaml	TinyMCE 6: spellchecker plugin je premium -> ukloni (browser_spellcheck ostaje)
+M45-078	\$(First|Last)([^A-Za-z0-9_.(]|$)	*.ss	$First/$Last u petlji -> $IsFirst/$IsLast
+M45-080	\$ThemeDir|ThemeDir\(	*.ss,*.php	$ThemeDir uklonjen -> $themedResourceURL('...') ili $resourceURL('...')
+M45-082	(^|[^A-Za-z0-9_])resources/(vendor|app)/|ManifestFileFinder::RESOURCES_DIR	*.ss,*.php,*.yml,*.yaml	RESOURCES_DIR je sada _resources -> ne hardkodiraj: $resourceURL()/ModuleResourceLoader, globalni RESOURCES_DIR
+M45-086	SilverStripe\\{1,2}HTML5\\{1,2}	*.php,*.yml,*.yaml	silverstripe/html5 ukinut (u core-u) -> ukloni HTML5Value config i modul
+M45-094	->(minLength|checkHistoricalPasswords|characterStrength)\(	*.php	PasswordValidator: minLength()->setMinLength(), checkHistoricalPasswords()->setHistoricCount(), characterStrength()->setMinTestScore()+setTestNames()
+M45-096	->(BaseURL|IsEmail)\(	*.php	Email::BaseURL()/IsEmail() uklonjeni -> $BaseURL/$IsEmail su u Email::getData() (templati rade i dalje)
+M45-097	->loadFixture\([^,()]*\)	*.php	SapphireTest::loadFixture() uklonjen -> static $fixture_file (FixtureTestState)
+M45-099	getLoginForms\(	*.php	Security::getLoginForms() uklonjen -> delegateToMultipleHandlers() / Authenticator handleri
+M45-100	embedForTemplate\(	*.php	EmbedShortcodeProvider::embedForTemplate() -> EmbedShortcodeProvider::embeddableToHtml()

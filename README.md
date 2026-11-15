@@ -9,6 +9,7 @@ Prerequisite: `git clone git@github.com:you-will-like-it/claude-skills.git` must
 ```text
 /plugin marketplace add you-will-like-it/claude-skills
 /plugin install ywli-site-optimizer@ywli-skills
+/plugin install ywli-dev@ywli-skills
 ```
 
 Update later with `/plugin marketplace update ywli-skills`.
@@ -18,6 +19,7 @@ Update later with `/plugin marketplace update ywli-skills`.
 | Plugin | Version | What it does |
 |---|---|---|
 | [ywli-site-optimizer](plugins/ywli-site-optimizer/README.md) | 0.3.0 | SilverStripe 6 audit and optimization, plus an audit-only mode for any site: technical + content SEO (DE/BS/HR/SR), Lighthouse ≥90, WCAG 2.2 AA. Report → approval → PR + CMS drafts → verification. |
+| [ywli-dev](plugins/ywli-dev/README.md) | 0.1.0 | SilverStripe dev tools. `ss-version-aware`: detects the project's SS major (3–6) and mode, keeps a local version block in CLAUDE.md / CLAUDE.local.md fresh via a SessionStart hook, loads verified per-version references, and drives 4→5 / 5→6 upgrades with a re-scannable checklist. **Release gate: references pending review.** |
 
 ## Repository layout
 
@@ -29,6 +31,10 @@ plugins/<plugin>/
   skills/<skill>/SKILL.md            instructions loaded by Claude
   skills/<skill>/scripts/            executable helpers
   skills/<skill>/templates/          files copied into client projects
+  scripts/, hooks/hooks.json         plugin-level scripts and hooks (ywli-dev)
+tests/<plugin>/                      plugin test suites, kept outside the plugin dir so they are not installed
+                                     (ywli-dev: bash tests/ywli-dev/run.sh)
+docs/superpowers/                    design specs and implementation plans
 ```
 
 ## Adding a new skill

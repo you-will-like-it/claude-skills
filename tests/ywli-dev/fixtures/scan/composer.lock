@@ -1,0 +1,10 @@
+{
+    "packages": [
+        {
+            "name": "silverstripe/framework",
+            "version": "4.13.0",
+            "type": "library"
+        }
+    ],
+    "packages-dev": []
+}

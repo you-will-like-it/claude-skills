@@ -1,0 +1,16 @@
+{
+    "_readme": ["This file locks the dependencies of your project to a known state"],
+    "packages": [
+        {
+            "name": "guzzlehttp/guzzle",
+            "version": "7.8.1",
+            "type": "library"
+        },
+        {
+            "name": "silverstripe/framework",
+            "version": "5.4.3",
+            "type": "library"
+        }
+    ],
+    "packages-dev": []
+}
