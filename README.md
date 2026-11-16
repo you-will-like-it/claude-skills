@@ -17,7 +17,7 @@ Update later with `/plugin marketplace update ywli-skills`.
 
 | Plugin | Version | What it does |
 |---|---|---|
-| [ywli-site-optimizer](plugins/ywli-site-optimizer/README.md) | 0.3.0 | SilverStripe 6 audit and optimization, plus an audit-only mode for any site: technical + content SEO (DE/BS/HR/SR), Lighthouse ≥90, WCAG 2.2 AA. Report → approval → PR + CMS drafts → verification. |
+| [ywli-site-optimizer](plugins/ywli-site-optimizer/README.md) | 0.4.0 | SilverStripe 6 audit and optimization incl. AEO/GEO, plus an audit-only mode for any site: technical + content SEO (DE/BS/HR/SR), Lighthouse ≥90, WCAG 2.2 AA. Report → approval → PR + CMS drafts → verification. |
 
 ## Repository layout
 

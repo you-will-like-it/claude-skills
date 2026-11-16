@@ -1,0 +1,11 @@
+{
+  "domain": "example.de",
+  "brand": ["Muster GmbH", "Muster Container"],
+  "questions": [
+    "Wo kann ich in Mannheim einen Container für Bauschutt mieten?",
+    "Was kostet ein 7m³ Container für Bauschutt in Mannheim?",
+    "Welche Containergröße brauche ich für eine Badsanierung?",
+    "Muss ich für einen Container auf der Straße eine Genehmigung beantragen?",
+    "Welcher Containerdienst in Mannheim ist empfehlenswert?"
+  ]
+}

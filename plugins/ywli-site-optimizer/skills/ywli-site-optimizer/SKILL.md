@@ -1,6 +1,6 @@
 ---
 name: ywli-site-optimizer
-description: Audit and optimize SilverStripe 6 client sites for technical SEO, content SEO (DE/BS/HR/SR), Lighthouse ≥90 in all four categories on mobile and desktop, and WCAG 2.2 AA. Report first (presentation + detailed PDF), then code PR and CMS draft content changes after explicit approval. Also has an audit-only mode for any website with public HTTP access only (prospects, other CMSs): crawl + Lighthouse + axe → PDF action plan. Use for any SEO audit, PageSpeed/Lighthouse/Core Web Vitals work, accessibility/barrierefreiheit/BFSG check, or "optimize this site" request, even if only one of these areas is named.
+description: Audit and optimize SilverStripe 6 client sites for technical SEO, content SEO (DE/BS/HR/SR), Lighthouse ≥90 in all four categories on mobile and desktop, WCAG 2.2 AA, and AEO/GEO (visibility and citations in ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews). Report first (presentation + detailed PDF), then code PR and CMS draft content changes after explicit approval. Also has an audit-only mode for any website with public HTTP access only (prospects, other CMSs): crawl + Lighthouse + axe → PDF action plan. Use for any SEO audit, AEO/GEO/AI-search visibility check, PageSpeed/Lighthouse/Core Web Vitals work, accessibility/barrierefreiheit/BFSG check, or "optimize this site" request, even if only one of these areas is named.
 ---
 
 # YWLI Site Optimizer
@@ -11,6 +11,7 @@ Targets:
 - **Lighthouse ≥90** in Performance, Accessibility, Best Practices and SEO, on **mobile and desktop**, on **every indexable URL**
 - **WCAG 2.2 AA**
 - Clean technical and content SEO for DACH (DE) and BiH/HR/RS (BS/HR/SR)
+- **AEO/GEO:** AI search and answer engines can reach, understand and cite the site
 
 The work runs in phases with a human gate. The client sees a report before anything changes. Nothing is published without the operator doing it himself.
 
@@ -111,6 +112,7 @@ Use this mode when the operator has nothing but the public URL. Typical cases: a
 - Lighthouse and axe
 - the manual WCAG checklist, done in a browser
 - on-page content SEO
+- AEO/GEO checks: AI-bot access, rendering, entity and structure signals. The panel is optional.
 
 **Missing data:**
 - **No GSC:** no query data, so no striking-distance, CTR or cannibalization analysis. Content SEO is based on the page content only. Say so in the report, and list GSC access as the next step for a deeper analysis.
@@ -125,7 +127,7 @@ Use this mode when the operator has nothing but the public URL. Typical cases: a
 **Report:**
 - Same two PDFs: the presentation plus the detailed "Maßnahmenkatalog / Plan mjera".
 - Use **YouWillLikeIT branding** (the site owner is not yet a client) with the site's name and screenshot on the title slide.
-- Every measure gets priority, effort (S/M/L) and the expected impact area (SEO / Performance / A11y / legal).
+- Every measure gets priority, effort (S/M/L) and the expected impact area (SEO / AEO / Performance / A11y / legal).
 - The last slide is the offer hook: what YouWillLikeIT can implement and what access would be needed (see Phase 0).
 - Don't claim anything that requires data you didn't have (rankings, traffic, conversions).
 
@@ -157,11 +159,14 @@ Baseline against **production** (read-only), or staging if production is not liv
    - Also run `node $T/axe.mjs <one-url-per-template.txt> $R/axe 375`, because some violations only appear in the mobile layout.
    - Treat `incomplete` items as candidates for manual checking, not as passes.
 5. **GSC:** `node $T/gsc.mjs <property> $R/gsc.jsonl 16`, or normalize the operator's CSV into the same fields.
+5a. **AI access:** `node $T/ai-access.mjs <site> $R/ai-access.json $R/urls.txt` (robots.txt per AI bot, WAF probe, llms.txt).
+5b. **Rendering:** `node $T/render-diff.mjs <one-url-per-template.txt> $R/render-diff.json`. This flags pages whose content exists only after JavaScript.
+5c. **AI visibility panel** (optional, only if the operator wants it and API keys are set): `node $T/aeo-panel.mjs panel.json $R/aeo`. See AEO/GEO below.
 6. **Code read** (if repo access already exists): `Page.ss` and layouts, Elemental block templates, `vite.config.*`, `app/_config/*.yml`, `composer.json`, `.ddev/config.yaml`.
 7. **Manual WCAG 2.2 checks:** one URL per PageType and per element type (checklist below).
 8. **Normalize** everything into `$R/findings.json`. Group by **template/PageType**, not by URL: one template fix usually resolves hundreds of URL-level issues, and the report must make that visible.
 ```json
-{"id":"A11Y-012","category":"tech-seo|content-seo|performance|a11y|best-practices",
+{"id":"A11Y-012","category":"tech-seo|content-seo|aeo|performance|a11y|best-practices",
  "severity":"critical|high|medium|low","wcag":"1.4.3","title":"…","evidence":"…",
  "urls":["…"],"urlCount":214,"template":"BlogPost / ElementContent","fix":"…",
  "effort":"S|M|L","needs":"repo|cms|client-decision"}
@@ -177,7 +182,7 @@ Baseline against **production** (read-only), or staging if production is not liv
 - `<html lang>` per locale
 - hreflang: reciprocal, x-default, matches the canonical. Check whether Fluent already outputs hreflang before adding custom tags.
 - duplicates, orphans, click depth
-- JSON-LD validity: prefer `Kalakotra\SchemaData` if installed
+- JSON-LD validity. For SS6 the standard is `dorsetdigital/silverstripe-schema-manager` (see AEO/GEO and Phase 2).
 - OG tags, mixed content, HTTPS/HSTS
 
 **Content SEO:**
@@ -204,6 +209,34 @@ From `gsc.jsonl`:
 - fonts: self-hosted, `font-display: swap`, preload. Self-hosting also avoids the Google-Fonts DSGVO problem in DE.
 - third parties: GTM, cookie banner, maps, video. Use facades / consent-gated loading.
 - caching and compression
+
+**AEO / GEO (answer engines, AI search).** Data comes from `crawl-issues.json` (`aeo-*`), `ai-access.json`, `render-diff.json` and optionally `aeo/`.
+
+1. **Access for AI crawlers** (highest impact, cheapest fix):
+   - Each vendor runs separate bots: *search* (builds the index answers cite from: OAI-SearchBot, Claude-SearchBot, PerplexityBot; Googlebot for AI Overviews; Bingbot for Copilot), *user* fetchers (ChatGPT-User, Claude-User, Perplexity-User), and *training* (GPTBot, ClaudeBot, CCBot, meta-externalagent; control tokens Google-Extended and Applebot-Extended).
+   - Search bots and user fetchers blocked by robots.txt or by a WAF/CDN (Cloudflare "AI bots" settings, bot-fight mode) is a **high** finding.
+   - Training access is the **client's decision**. Present it neutrally; never block or allow it on our own.
+   - Google-Extended does not affect AI Overviews; those follow Googlebot.
+   - The WAF probe runs from our IP with the bot's user agent, so it is indicative. Ask the client to confirm in the CDN settings or server logs.
+2. **Content without JavaScript:** most AI crawlers don't execute JS. Pages flagged `jsDependent` lose their content for them. SS6 renders server-side, so this mostly matters for prospects on SPA stacks and for JS-injected sections (tabs, accordions, sliders filled via JS).
+3. **Entity and trust signals:**
+   - `Organization`/`LocalBusiness` schema with name, logo, address, contact and `sameAs` links (Google Business profile, LinkedIn, Wikidata, social profiles)
+   - consistent name, address and phone (NAP) across the site and the profiles
+   - authors as `Person` with an author page on articles
+   - `dateModified` on content pages
+   - Impressum, "Über uns"/"O nama", contact page
+4. **Citable structure** (`aeo-*` findings):
+   - question-style H2/H3 (how people ask) followed directly by a 40–60 word answer, then detail
+   - definitions, lists and tables for comparisons, prices, steps
+   - own numbers and facts with source and date
+   - sections that make sense when quoted alone
+   - FAQ blocks only where real questions exist, marked up as `FAQPage`
+   - The crawl heuristics are a starting point; judge the actual content before writing findings.
+5. **llms.txt:** informational only. It is a proposed standard without confirmed use by the major engines. Mention presence/absence, low priority; never sell it as a key measure.
+6. **Measurement:**
+   - **AI visibility panel** (optional): 10–20 real customer questions per client in the site's language, asked to Perplexity, ChatGPT, Claude and Gemini via API (`aeo-panel.mjs`). Record: site cited? brand mentioned? Results vary between runs, so report them as a snapshot with the date, never as rankings. Costs money per question and provider; only with the operator's keys and OK.
+   - **Without API keys** (e.g. claude.ai): run the same questions through the session's own web search and record whether the domain appears in the results. Label this "search index presence", not AI citations.
+   - Recommend GA4 tracking of AI referrals (`chatgpt.com`, `perplexity.ai`, `gemini.google.com`, `claude.ai`, `copilot.microsoft.com`) so effects become measurable.
 
 **Accessibility, automated:** axe tags `wcag2a wcag2aa wcag21a wcag21aa wcag22aa best-practice`. Any critical/serious violation must be fixed.
 
@@ -238,9 +271,10 @@ If Claude's Slides/Docs artifact types are available in the session (claude.ai),
 4. Technical SEO: top issues with counts
 5. Content opportunities from GSC: top queries/pages and why they matter
 6. Accessibility: WCAG 2.2 AA status, top barriers, BFSG note (DE)
-7. Performance / Core Web Vitals
-8. Plan: work packages, effort, which items need client decisions (third parties, content)
-9. Approval: what is needed (repo, CMS editor login, staging), next steps
+7. AI-Sichtbarkeit / AI vidljivost (AEO/GEO): AI-bot access matrix (search / user / training × allowed / blocked), entity and structure gaps, panel snapshot if run, training-crawler decision for the client
+8. Performance / Core Web Vitals
+9. Plan: work packages, effort, which items need client decisions (third parties, content, AI training policy)
+10. Approval: what is needed (repo, CMS editor login, staging), next steps
 
 **B. Detailed technical report** (`a4`):
 - every finding from `findings.json`, grouped by category → template
@@ -275,6 +309,11 @@ Record the answers in `project.yml` (`approved_findings`). **Do not start Phase 
   - **UserForms:** labels, `aria-describedby` for errors, `autocomplete` attributes.
   - **Cookie banner:** `role="dialog"`, focus management, keyboard dismissable, doesn't obscure focus.
   - **Global:** `:focus-visible` styles, skip link, landmarks (`header`/`nav`/`main`/`footer`).
+  - **robots.txt:** find out how the project serves it (static `public/robots.txt`, a robots module or a controller) and change it there. Use the AI groups from `templates/robots-ai.txt.example`, with the training block set to the client's decision. A bot matching a named group ignores `*`, so repeat the project's protected paths in each named group. WAF/CDN bot settings are outside the repo: list them for the client.
+  - **Structured data:** `dorsetdigital/silverstripe-schema-manager` (needs PHP 8.3+ on SS6). It emits Organization, WebSite, WebPage and BreadcrumbList as one linked `@graph`, with Organization data managed in SiteConfig. Per-page types (FAQPage, Service, Event, Product, BlogPosting, Person, LocalBusiness …) come via the page's Schema tab or `SchemaRegistry::add()`. Extra properties go through the `updateSchemaManagerEntities(array &$entities)` hook. Enable `DorsetDigital\SchemaManager\Extension\BlogPostSchemaExtension` if the blog module is used.
+    - Read the module's docs (README and the guides it links: site schema, developer API, FAQ, local businesses) in the installed vendor folder before coding. Check which Organization fields (sameAs, logo, address) SiteConfig offers, and add missing ones via the hook instead of a second JSON-LD block.
+    - If the project already has another schema module or hand-written JSON-LD, remove the duplicates so there is one graph per page.
+  - **AEO content:** question headings, direct answers, tables and FAQ sections are content changes. They go through the CMS changeset as drafts, not into templates, unless an Elemental block type is missing (e.g. FAQ block with `FAQPage` output).
 - **Verify with DDEV before pushing:**
   1. `ddev composer install`, then `ddev npm ci && ddev npm run build` (or host npm, if the project builds on the host)
   2. `ddev exec vendor/bin/sake db:build --flush`

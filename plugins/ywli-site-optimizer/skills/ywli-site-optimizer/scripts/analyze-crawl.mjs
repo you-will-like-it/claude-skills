@@ -112,6 +112,20 @@ add('og-missing', 'low', indexable.filter((r) => !r.ogTitle || !r.ogImage).map((
 add('jsonld-invalid', 'medium', indexable.filter((r) => r.jsonLdTypes?.includes('INVALID_JSON')).map((r) => r.url));
 add('jsonld-missing', 'low', indexable.filter((r) => !r.jsonLdTypes?.length).map((r) => r.url));
 
+// AEO / GEO (answer engines, AI search)
+const A = (r) => r.aeo ?? {};
+const anyOrg = pages.some((r) => A(r).orgSchema);
+add('aeo-org-schema-missing', 'high', anyOrg ? [] : [start]);
+add('aeo-org-sameas-missing', 'medium', anyOrg && !pages.some((r) => A(r).orgSameAs > 0) ? [start] : []);
+add('aeo-no-date-modified', 'low', indexable.filter((r) => (r.words ?? 0) >= 300 && !A(r).dateModified).map((r) => r.url));
+add('aeo-article-without-author', 'medium', indexable.filter((r) =>
+  (r.jsonLdTypes ?? []).some((t) => /Article|BlogPosting|NewsArticle/.test(t)) && !A(r).hasAuthor).map((r) => r.url));
+add('aeo-no-question-headings', 'low', indexable.filter((r) => (r.words ?? 0) >= 600 && !A(r).questionHeadings).map((r) => r.url));
+add('aeo-question-without-direct-answer', 'medium', indexable.filter((r) => A(r).questionHeadings > A(r).questionsAnswered)
+  .map((r) => `${r.url} (${A(r).questionHeadings - A(r).questionsAnswered}/${A(r).questionHeadings})`));
+add('aeo-long-page-unstructured', 'low', indexable.filter((r) => (r.words ?? 0) >= 800 && !A(r).lists && !A(r).tables)
+  .map((r) => `${r.url} (${r.words} words)`));
+
 // Architecture
 add('sitemap-empty-or-missing', 'high', recs.some((r) => r.inSitemap) ? [] : [new URL('/sitemap.xml', startArg).href]);
 add('not-in-sitemap', 'low', indexable.filter((r) => !r.inSitemap).map((r) => r.url));

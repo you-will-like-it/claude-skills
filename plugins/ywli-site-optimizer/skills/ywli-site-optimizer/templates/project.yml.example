@@ -24,4 +24,8 @@ gsc:
   property: "sc-domain:example.de"
   auth: service-account                   # service-account | csv
 
+aeo:
+  training_crawlers: undecided            # allow | block | undecided (client decision, never ours)
+  panel: null                             # path to panel.json (see templates/aeo-panel.example.json) or null
+
 approved_findings: []                     # filled at the GATE
