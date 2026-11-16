@@ -92,6 +92,38 @@ function detectStack(body, $, h) {
   return [...hints];
 }
 
+// Question-style headings (DE / BS-HR-SR / EN) for answer-engine readiness
+const Q_START = /^(was|wie|warum|wieso|weshalb|wann|wo|woher|wohin|wer|welche[rsmn]?|kann|können|ist|sind|gibt es|muss|darf|šta|sta|što|kako|zašto|zasto|kada|kad|gdje|gde|ko|tko|koji|koja|koje|koliko|da li|je li|može li|moze li|what|how|why|when|where|who|which|can|is|are|does|do)\s/i;
+const wc = (t) => (t ?? '').split(/\s+/).filter(Boolean).length;
+
+/** AEO/GEO signals: question headings with direct answers, structure, freshness, authorship, entity data. */
+function extractAeo($, ldNodes, orgNodes) {
+  const qHeads = $('h2,h3').filter((_, e) => {
+    const t = $(e).text().trim();
+    return /\?\s*$/.test(t) || Q_START.test(t + ' ');
+  });
+  let answered = 0;
+  qHeads.each((_, e) => {
+    const next = $(e).nextUntil('h1,h2,h3,h4').filter((_, x) => wc($(x).text()) > 0).first();
+    const n = wc(next.text());
+    if (n >= 15 && n <= 90) answered++;
+  });
+  const outsideChrome = (_, e) => $(e).closest('nav,header,footer').length === 0;
+  const pick = (k) => ldNodes.find((n) => n[k])?.[k] ?? null;
+  return {
+    questionHeadings: qHeads.length,
+    questionsAnswered: answered,
+    lists: $('ul,ol').filter(outsideChrome).length,
+    tables: $('table').length,
+    dateModified: pick('dateModified') ?? $('meta[property="article:modified_time"]').attr('content') ?? null,
+    datePublished: pick('datePublished') ?? $('meta[property="article:published_time"]').attr('content') ?? null,
+    hasAuthor: ldNodes.some((n) => n.author) || Boolean($('meta[name="author"]').attr('content')) || $('a[rel="author"]').length > 0,
+    orgSchema: orgNodes.length > 0,
+    orgSameAs: Math.max(0, ...orgNodes.map((n) => [n.sameAs ?? []].flat().length)),
+    faqSchema: ldNodes.some((n) => [n['@type']].flat().includes('FAQPage')),
+  };
+}
+
 async function visit(url) {
   if (DELAY_MS) await new Promise((r) => setTimeout(r, DELAY_MS));
   const rec = { url, inSitemap: inSitemap.has(url) };
@@ -116,16 +148,30 @@ async function visit(url) {
     const $ = cheerio.load(body);
     rec.stack = detectStack(body, $, r.headers);
 
-    const jsonLdTypes = [];
+    // JSON-LD: flatten arrays and @graph into a node list
+    const ldNodes = [];
+    let ldInvalid = false;
     $('script[type="application/ld+json"]').each((_, e) => {
       try {
-        const j = JSON.parse($(e).text());
-        const nodes = [j, ...(Array.isArray(j) ? j : []), ...(j['@graph'] ?? [])].flat();
-        for (const n of nodes) if (n && n['@type']) jsonLdTypes.push(...[n['@type']].flat());
+        const stack = [JSON.parse($(e).text())];
+        while (stack.length) {
+          const n = stack.pop();
+          if (Array.isArray(n)) stack.push(...n);
+          else if (n && typeof n === 'object') {
+            ldNodes.push(n);
+            if (Array.isArray(n['@graph'])) stack.push(...n['@graph']);
+          }
+        }
       } catch {
-        jsonLdTypes.push('INVALID_JSON');
+        ldInvalid = true;
       }
     });
+    const typesOf = (n) => [n['@type'] ?? []].flat().map(String);
+    const jsonLdTypes = [...new Set(ldNodes.flatMap(typesOf))];
+    if (ldInvalid) jsonLdTypes.push('INVALID_JSON');
+    const orgNodes = ldNodes.filter((n) => typesOf(n).some((t) => /^(Organization|LocalBusiness|Corporation)$|Business$|Store$/.test(t)));
+
+    rec.aeo = extractAeo($, ldNodes, orgNodes);
 
     const outLinks = new Set();
     $('a[href]').each((_, e) => {

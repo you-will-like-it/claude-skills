@@ -1,0 +1,33 @@
+# AI crawler section for robots.txt (YWLI default policy)
+# - Search crawlers and user-triggered fetchers: ALLOW (needed for citations in ChatGPT, Claude, Perplexity)
+# - Training crawlers: client decision. Default below = allow; switch "Allow" to "Disallow" to opt out.
+# Keep the site's existing "User-agent: *" group and Sitemap lines; add these groups alongside them.
+# Note: a bot that matches a named group ignores the "*" group, so repeat any paths that must stay blocked
+# (e.g. /admin/, /Security/) inside each named group.
+
+# --- AI search / citation crawlers
+User-agent: OAI-SearchBot
+User-agent: Claude-SearchBot
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /Security/
+
+# --- User-triggered fetchers (a person asked the assistant to open the page)
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Perplexity-User
+Allow: /
+Disallow: /admin/
+Disallow: /Security/
+
+# --- Training crawlers / control tokens (client decision)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+Disallow: /Security/
