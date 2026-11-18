@@ -131,6 +131,35 @@ Use this mode when the operator has nothing but the public URL. Typical cases: a
 - The last slide is the offer hook: what YouWillLikeIT can implement and what access would be needed (see Phase 0).
 - Don't claim anything that requires data you didn't have (rankings, traffic, conversions).
 
+**Third PDF: owner summary** (audit-only only; the two PDFs above stay exactly as they are). File: `reports/<domain>-kurzbericht.pdf` (DE) or `reports/<domain>-sazetak.pdf` (BS). Render as A4 with `render-pdf.mjs … a4`, YouWillLikeIT branding.
+
+- **Reader:** the business owner, who doesn't know what Lighthouse, WCAG, canonical, schema or LCP mean and decides in a few minutes whether to talk to us.
+- **Length:** 4–6 pages, large type, lots of white space.
+- **Content, in this order:**
+  1. **Overall verdict:** a traffic light for each of four plain areas:
+     - "Gefunden werden bei Google" / "Pronalazak na Googleu" (SEO)
+     - "Empfohlen von KI-Assistenten" / "Preporuke AI asistenata" (AEO)
+     - "Geschwindigkeit" / "Brzina"
+     - "Für alle nutzbar" / "Pristupačnost"
+
+     Each light gets one sentence that explains it.
+  2. **What works well:** 2–3 honest positives.
+  3. **The 5 most important problems:** each one is a short heading in everyday words, then "Was das für Sie bedeutet / Šta to znači za vas" (the business consequence: visitors leave, calls/enquiries lost, invisible in AI answers, legal risk). Add one sentence on how hard it is to fix (easy / medium / bigger). Pick the five by business impact, not by technical severity.
+  4. **Legal note** (DE, only if it applies): BFSG in two sentences, framed as "may apply, have it checked", never as a verdict or a threat.
+  5. **What we would do:** 3–5 steps in plain words, with no prices unless the operator gives them.
+  6. **Next step + contact:** one clear call to action.
+- **Language rules:**
+  - no technical terms or anglicisms; if one is unavoidable, explain it in half a sentence the first time
+  - short sentences, active voice, "Sie" in DE
+  - round the numbers ("etwa 6 Sekunden", "jede dritte Seite")
+  - one everyday comparison where it helps (e.g. a slow page is like a shop door that takes 6 seconds to open)
+- **Visuals:** the site screenshot on the cover, the traffic lights, at most one simple bar or gauge per area. No tables with URLs, no score matrices, no code.
+- **Honesty:**
+  - every statement must be backed by a finding in the detailed report
+  - no fear-mongering, no guarantees about rankings or revenue
+  - say plainly what could not be measured (e.g. "Ohne Zugang zur Google Search Console können wir Ihre Platzierungen nicht sehen")
+- **Before rendering:** reread the text as the owner. If a sentence needs the detailed report to be understood, rewrite it.
+
 Store runs under `clients/<domain>/` with a minimal `project.yml` (`site`, `report_language`, `mode: audit-only`).
 
 ## Phase 0: Intake

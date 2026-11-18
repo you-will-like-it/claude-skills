@@ -19,7 +19,7 @@ Audit and optimization workflow for SilverStripe 6 client sites under the YouWil
 | 2 Fixes | PR on GitHub/Bitbucket; CMS content written as **draft** (task or browser) | branch + drafts only |
 | 3 Verify | rerun on staging, before/after report | no |
 
-**Audit-only mode:** for any site with public HTTP access only (prospects, other CMSs). Runs Phase 1 politely, on a Lighthouse sample per page type, then produces the PDF action plan under YouWillLikeIT branding. Stops there.
+**Audit-only mode:** for any site with public HTTP access only (prospects, other CMSs). Runs Phase 1 politely, on a Lighthouse sample per page type, then produces the PDF action plan plus a plain-language owner summary under YouWillLikeIT branding. Stops there.
 
 Production is never written to. Content is never published by the skill.
 
@@ -95,6 +95,7 @@ Create dedicated accounts with minimal rights and revoke them after the project.
 
 ## Changelog
 
+- **0.4.1** (2026-11-18): audit-only adds a third PDF, a plain-language owner summary (`<domain>-kurzbericht.pdf` / `-sazetak.pdf`). The other two reports are unchanged.
 - **0.4.0** (2026-11-16): AEO/GEO. AI-bot access check (robots.txt + WAF probe + llms.txt), raw-vs-rendered diff, AEO signals in crawl (question headings with direct answers, structure, dateModified, author, Organization/sameAs) and `aeo-*` findings, optional multi-engine visibility panel, report slide "AI-Sichtbarkeit". Structured data standard switched to `dorsetdigital/silverstripe-schema-manager`.
 - **0.3.0** (2026-11-14): runs in claude.ai cloud sessions (needs network egress "all domains"); scripts pulled from this repo; Lighthouse in foreground chunks.
 - **0.2.0** (2026-11-14): audit-only mode for sites with public HTTP access only; polite crawl (`YWLI_POLITE=1`); CMS/stack detection in crawl results.

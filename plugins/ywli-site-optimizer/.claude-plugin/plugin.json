@@ -1,7 +1,7 @@
 {
   "name": "ywli-site-optimizer",
   "description": "Audit and optimize SilverStripe 6 sites: technical + content SEO (DE/BS/HR/SR), Lighthouse >=90 on all categories, WCAG 2.2 AA, AEO/GEO (AI search visibility). Report first, fixes after approval.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": {
     "name": "YouWillLikeIT"
   },
